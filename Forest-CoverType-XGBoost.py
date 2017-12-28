@@ -106,7 +106,7 @@ for i in range(len(configs)):
     predictions = [round(value) for value in y_pred]
     accuracy = accuracy_score(y_test, predictions)
 
-    measurement = [train_time, test_time, accuracy * 100]
+    measurement = {'config_id': i, 'train_time': train_time, 'test_time': test_time, 'accuracy': accuracy * 100}
 
     csv_filename = 'exp_' + dataset_name + '.csv'
     myField = ["config_id", "train_time", "test_time", "accuracy"]
