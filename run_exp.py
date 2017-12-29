@@ -10,6 +10,19 @@ import time
 import os
 
 
+def write_configuration(name, configs, options):
+    csv_filename = 'configurations_' + name + '.csv'
+    config = {}
+
+    with open(os.path.join(exp_path, csv_filename), 'w') as csvfile:
+        fileds = list(options.keys())
+        writer = csv.DictWriter(csvfile, fieldnames=fileds)
+        writer.writeheader()
+        for i in range(len(configs)):
+            for k, v in options.items():
+                config[k] = configs[i, v]
+            writer.writerow(config)
+
 options = {
 'min_child_weight': {1, 10},
 'nthread': {1, 3},
@@ -41,8 +54,8 @@ options_idx = {
 
 # confg stuff, later to be moved to config.py
 test_size = 0.33
-data_perc = 0.1
-dataset_name = "covtype.data"
+data_perc = 1
+dataset_name = "CNAE-9.data"
 exp_path = "experiments"
 data_path = "data"
 num_params = len(options)
@@ -63,8 +76,8 @@ num_attr = dataset.shape[1]
 dataset = dataset[0:int(data_size*data_perc), :]
 
 # split into input (X) and output (Y) variables
-X = dataset[:, 0: num_attr - 1].astype(float)
-Y = dataset[:, num_attr - 1]
+X = dataset[:, 1: num_attr].astype(float)
+Y = dataset[:, 0]
 
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=test_size, random_state=seed)
 
@@ -76,6 +89,7 @@ for c in confs:
     configs[i, :] = np.array(c)
     i += 1
 
+# write_configuration('xgboost11', configs, options_idx)
 
 for i in range(len(configs)):
 
@@ -90,7 +104,8 @@ for i in range(len(configs)):
         colsample_bytree=list(options['colsample_bytree'])[int(configs[i, options_idx['colsample_bytree']])],
         reg_alpha=list(options['alpha'])[int(configs[i, options_idx['alpha']])],
         reg_lambda=list(options['lambda'])[int(configs[i, options_idx['lambda']])],
-        scale_pos_weight=list(options['scale_pos_weight'])[int(configs[i, options_idx['scale_pos_weight']])]
+        scale_pos_weight=list(options['scale_pos_weight'])[int(configs[i, options_idx['scale_pos_weight']])],
+        colsample_bylevel=list(options['colsample_bylevel'])[int(configs[i, options_idx['colsample_bylevel']])],
     )
 
     start = time.time()
