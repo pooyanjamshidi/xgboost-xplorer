@@ -15,8 +15,8 @@ def write_configuration(name, configs, options):
     config = {}
 
     with open(os.path.join(exp_path, csv_filename), 'w') as csvfile:
-        fileds = list(options.keys())
-        writer = csv.DictWriter(csvfile, fieldnames=fileds)
+        fields = list(options.keys())
+        writer = csv.DictWriter(csvfile, fieldnames=fields)
         writer.writeheader()
         for i in range(len(configs)):
             for k, v in options.items():
